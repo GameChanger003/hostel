@@ -12,6 +12,8 @@ const Mainataince = () => {
     const [Id,setId]=useState();
     const [Chg,setChg]=useState(true);
     const [Description,setDescription]=useState(null);
+    const [Location,setLocation]=useState();
+    const [Rooms,setRooms]=useState()
     var date= new Date();
     date=date.toDateString()
 
@@ -29,7 +31,16 @@ const Mainataince = () => {
 
     useEffect(() => {
       fetchUsers()
+      fetchrooms()
     }, [])
+    
+    async function fetchrooms(){
+      const {dts} = await supabase
+      .from('rooms')
+      .select('*')
+      setRooms(dts)
+      console.log(Rooms)
+    }
 
     async function fetchUsers(){
       const {data} = await supabase
@@ -39,7 +50,7 @@ const Mainataince = () => {
     }
 
     async function submit() {
-      const {sts,err}=await supabase.from('Maintaince').insert({Repair:Item,Price:Quantity,Desc:Description,created_at:date}).select('*')
+      const {sts,err}=await supabase.from('Maintaince').insert({Repair:Item,Price:Quantity,Desc:Description,Location:Location,created_at:date}).select('*')
       if(!err){
         tst('Success')
         fetchUsers()
@@ -85,12 +96,12 @@ const Mainataince = () => {
             <br />
             <h1>Maintaince 🔧</h1>
             <hr width='50%'/>
-            <Row>
+            <Row >
                 <Col>
                 <FloatingLabel
         controlId="floatingInput"
-        label="Item Name"
-        className="mb-3"
+        label="Repaired Item"
+        className=""
       >
         <Form.Control type="text" placeholder="name@example.com" value={Item} onChange={e=>SetItem(e.target.value)}/>
       </FloatingLabel></Col>
@@ -102,7 +113,13 @@ const Mainataince = () => {
           }} min='1' OnlyNumber="true"/>
       </FloatingLabel>
                 </Col>
-            </Row>
+      {/* <Col>
+      <Form.Select aria-label="Location" size='lg'>
+      <option>Choose location</option>
+      {Rooms && Rooms.map(e=><option>{e.Rooms}</option>)}
+    </Form.Select>
+      </Col> */}
+            </Row><br />  
             <Row>
                 <Col>
                 <FloatingLabel controlId="floatingTextarea2" label="Description" >

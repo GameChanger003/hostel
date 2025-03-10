@@ -14,7 +14,9 @@ const StudentAdd = () => {
     const [Branch,setBranch]=useState();
     const [Sphn,setSphn]=useState();
     const [Phn,setPhn]=useState();
+    const [Bgrp,setBgrp]=useState();
     const [Gphn,setGphn]=useState();
+    const [Adhar,setAdhar]=useState();
     const [Block,setBlock]=useState();
     const [Floor,setFloor]=useState('');
     const [Room,setRoom]=useState('');
@@ -22,12 +24,12 @@ const StudentAdd = () => {
     const[uDat,setUdat]=useState();
     const [imageUpload, setImageUpload] = useState(null);
     const [imageUrls, setImageUrls] = useState([]);
-
+    const ids=uuidv4()
     async function submit() {  
     const { data, error } = await supabase
     .from('Students')
     .insert([
-    {regno:Regno,name:Name,phno:Sphn,gurdian1:Fname,gurdian2:Mname,phno1:Phn,phno2:Gphn,fee:Fee,branch:Branch,created_at:Ystd},
+    {regno:Regno,name:Name,phno:Sphn,gurdian1:Fname,gurdian2:Mname,phno1:Phn,phno2:Gphn,fee:Fee,branch:Branch,created_at:Ystd,blood_grp:Bgrp,aadhar:Adhar,img:Regno},
     ])
     .select()
     if(!error){
@@ -40,7 +42,7 @@ const StudentAdd = () => {
     }
 
     async   function uploadFile() {
-        const{data}=await supabase.storage.from('images').upload(uuidv4(),imageUpload)
+        const{data}=await supabase.storage.from('images/students').upload(Regno,imageUpload)
         if(data){
             tst("img uploaded")
         const { datas, error } = await supabase
@@ -135,8 +137,13 @@ const StudentAdd = () => {
                 </FloatingLabel>
                 </Col>
                 <Col>
-                <FloatingLabel controlId="floatingTextarea" label="Relation of Gurdian" className="mb-3">
-                    <Form.Control type="text" placeholder="Leave a comment here" onChange={e=>setGphn(e.target.value)}/>
+                <FloatingLabel controlId="floatingTextarea" label="Blood Group" className="mb-3">
+                    <Form.Control type="text" placeholder="Leave a comment here" onChange={e=>setBgrp(e.target.value)}/>
+                </FloatingLabel>
+                </Col>
+                <Col>
+                <FloatingLabel controlId="floatingTextarea" label="Addhar Number" className="mb-3">
+                    <Form.Control type="text" placeholder="Leave a comment here" onChange={e=>setAdhar(e.target.value)}/>
                 </FloatingLabel>
                 </Col>
             </Row><br />

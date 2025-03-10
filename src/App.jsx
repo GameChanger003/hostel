@@ -9,6 +9,8 @@ import Test from './test';
 import Mainataince from './Pages/Maintaince';
 import StudentAdd from './Pages/StudentsAdd';
 import { useNavigate } from "react-router-dom";
+import AllStudentsData from './Pages/AllStudentsData'
+import DueFinder from './Pages/DueFinder';
 
 const App = () => {
   const [token, settoken] = useState(false)
@@ -78,6 +80,8 @@ const App = () => {
                 <Route path='/Inventory' element={<Inventory/>}/>
                 <Route path='/Maintaince' element={<Mainataince/>}/>
                 <Route path='/StudentsAdd' element={<StudentAdd/>}/>
+                <Route path='/AllStudents' element={<AllStudentsData/>}/>
+                <Route path='/DueFinder' element={<DueFinder/>}/>
                 <Route exact path='*' element={<>Hello</>}/>
                 <Route path='/test' element={Test}/>
                 </>:<>Not Auth</>

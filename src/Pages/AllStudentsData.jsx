@@ -1,8 +1,6 @@
 import React,{useState,useEffect} from 'react'
+import {supabase} from '../connection'
 import{Card,Button,Row,Col,Container,FloatingLabel,Form,Modal} from 'react-bootstrap';
-import Logo from './Student.png'
-import { DataBase } from "../FirebaseInit";
-import { getDocs,collection,doc,updateDoc,deleteDoc,increment,getDoc } from 'firebase/firestore';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 // import Reveal from 'react-reveal/Reveal';
@@ -26,14 +24,15 @@ const AllStudentsData = () => {
     const [Id, setId] = useState();
     const [uData,setuData]=useState([]);
     const [modalShow, setModalShow] = useState(false);
+    const [imgd,setimgd]=useState();
+    const [dsb,setdsb]=useState(true)
+    const [bgp,setbgp]=useState()
+    const [adhr,setadhr]=useState()
 
-    const colref=(collection(DataBase,'Students'));
+
     function Edit() {
-            const upref=doc(DataBase,'Students',Regno)
-             updateDoc(upref,{Regno,Name,Fname,Mname,Ystd,Branch,Sphn,Phn,Gphn,Block,Room,Fee,})
-            .then(()=>{tst('Update Success')})
-            .catch(err=>console.log(err))
-            setBlock('')
+  
+        setBlock('')
         setFname('')
         setBranch('')
         setGphn('')
@@ -59,44 +58,16 @@ const AllStudentsData = () => {
       
     useEffect(() => {
        fet()
-        // colref.where('Regno','==','L21CS196').get().then((snapshot)=>{
-        //   snapshot.docs.forEach(doc => {
-        //     console.log(doc)
-        //   });
-        // })
-
       }, [])
 
-      function fet() {
-        getDocs(colref)
-        .then(res=>{
-          const movs=res.docs.map(doc=>({
-            data:doc.data(),
-            id:doc.id,
-          }))
-          setData(movs)
-        })
+      async function fet() {
+        const {data} = await supabase
+        .from('Students')
+        .select('*')
+        setData(data)
+        console.log(data)
       }
-
-      async function info() {
-        const docRef = doc(DataBase, "Students",Regno);
-        const docSnap = await getDoc(docRef);
-        setuData(docSnap.data());
-        }
-
-      const Del=async() =>{
-        let r=Block+Floor+Room
-        const delref=doc(DataBase,'Students',Regno)
-        const docRef = doc(collection(DataBase,'Rooms'),r);
-        const data = {Vac: increment(1)};
-        await deleteDoc(delref)
-        await updateDoc(docRef, data).then(()=>{
-          tst('Deleted Completed!')
-          fet()
-        })
-        
-        .catch(err=>console.log(err.message))
-       }
+      // https://jfrtzgcmlyhlamqazwmx.supabase.co/storage/v1/object/public/images/students/549130af-d285-4716-94d1-ec371b2a7c61?t=2023-09-28T07%3A03%3A05.367Z
 
        function MyVerticallyCenteredModal(props) {
         return (
@@ -112,24 +83,67 @@ const AllStudentsData = () => {
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <h4>Regno:{uData.Regno}</h4>
-              <h5>Name:{uData.Name}</h5>
-              <h5>Name:{uData.Branch}</h5>
-              <h5>Name:{uData.Room}</h5>
-              <h5>Name:{uData.Floor}</h5>
-              <h5>Name:{uData.Block}</h5>
-              <h5>Name:{uData.Phn}</h5>
-              <h5>Name:{uData.Name}</h5>
-              <img src={uData.imageUrls} height={250}></img>
-
+              <Row md={3} xs={1} className='g-3'>
+                <Col>
+                <FloatingLabel controlId="floatingPassword" label="Regno">
+                  <Form.Control type="text" placeholder="Password" value={Id} onChange={e=>setId(e.target.value)} disabled={dsb}/>
+                </FloatingLabel>
+                </Col>
+                <Col>
+                <FloatingLabel controlId="floatingPassword" label="Name">
+                  <Form.Control type="text" placeholder="Password" value={Name} onChange={e=>setName(e.target.value)} disabled={dsb}/>
+                </FloatingLabel>
+                </Col><Col>
+                <FloatingLabel controlId="floatingPassword" label="Student phone number">
+                  <Form.Control type="number" placeholder="Password" value={Sphn} onChange={e=>setSphn(e.target.value)} disabled={dsb}/>
+                </FloatingLabel>
+                </Col><Col>
+                <FloatingLabel controlId="floatingPassword" label="Gurdian-1">
+                  <Form.Control type="text" placeholder="Password" value={Fname} onChange={e=>setFname(e.target.value)} disabled={dsb}/>
+                </FloatingLabel>
+                </Col><Col>
+                <FloatingLabel controlId="floatingPassword" label="Gurdian-2">
+                  <Form.Control type="text" placeholder="Password" value={Mname} onChange={e=>setMname(e.target.value)} disabled={dsb}/>
+                </FloatingLabel>
+                </Col><Col>
+                <FloatingLabel controlId="floatingPassword" label="Phone number-1">
+                  <Form.Control type="text" placeholder="Password" value={Phn} onChange={e=>setPhn(e.target.value)} disabled={dsb}/>
+                </FloatingLabel>
+                </Col><Col>
+                <FloatingLabel controlId="floatingPassword" label="Phone Number-2">
+                  <Form.Control type="text" placeholder="Password" value={Gphn} onChange={e=>setGphn(e.target.value)} disabled={dsb}/>
+                </FloatingLabel>
+                </Col><Col>
+                <FloatingLabel controlId="floatingPassword" label="Branch">
+                  <Form.Control type="text" placeholder="Password" value={Branch} onChange={e=>setBranch(e.target.value)} disabled={dsb}/>
+                </FloatingLabel>
+                </Col><Col>
+                <FloatingLabel controlId="floatingPassword" label="Blood Group">
+                  <Form.Control type="text" placeholder="Password" value={bgp} onChange={e=>setbgp(e.target.value)} disabled={dsb}/>
+                </FloatingLabel>
+                </Col><Col>
+                <FloatingLabel controlId="floatingPassword" label="Aadhar Number">
+                  <Form.Control type="text" placeholder="Password" value={adhr} onChange={e=>setadhr(e.target.value)} disabled={dsb}/>
+                </FloatingLabel>
+                </Col>
+                <Col>
+                <div class="md-3">
+                  <label for="formFile" class="form-label">Student Image</label>
+                  <input class="form-control" type="file" id="formFile"/>
+                </div>
+                </Col>
+                <Col>
+                <img src={'https://jfrtzgcmlyhlamqazwmx.supabase.co/storage/v1/object/public/images/students/'+Id} height={100} width={100}/>
+                </Col>
+              </Row>
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={props.onHide}>Close</Button>
+            <Button onClick={e=>setdsb(!dsb)} variant='outline-info'>Edit</Button>
+              <Button onClick={props.onHide} variant='outline-warning'>Close</Button>
             </Modal.Footer>
           </Modal>
         );
       }
-
   
   return (
     <div>
@@ -146,130 +160,42 @@ const AllStudentsData = () => {
       />
         <Container>
             <br />
-            {/* {Chg?<><Row>
-            <Col>
-        <FloatingLabel
-        controlId="floatingInput"
-        label="Reg.No"
-        className="mb-3"
-      >
-        <Form.Control type="text" placeholder="name@example.com" value={Regno} onChange={e=>setRegno(e.target.value)}/>
-      </FloatingLabel>
-      </Col>
-      <Col>
-      <FloatingLabel controlId="floatingPassword" label="Name">
-        <Form.Control type="text" placeholder="Password"  value={Name} onChange={e=>setName(e.target.value)}/>
-      </FloatingLabel>
-      </Col>
-      </Row>
-      <Row>
-        <Col>
-        <FloatingLabel controlId="floatingPassword" label="Father Name">
-        <Form.Control type="text" placeholder="Password" value={Fname} onChange={e=>setFname(e.target.value)}/>
-      </FloatingLabel>
-      </Col>
-      <Col>
-        <FloatingLabel controlId="floatingPassword" label="Mother Name">
-        <Form.Control type="text" placeholder="Password" value={Mname} onChange={e=>setMname(e.target.value)}/>
-      </FloatingLabel>
-      </Col>
-        </Row>
-        <br />
-        <Row>
-        <Col>
-        <FloatingLabel controlId="floatingPassword" label="Year Of Joininng">
-        <Form.Control type="text" placeholder="Password" value={Ystd} onChange={e=>setYstd(e.target.value)}/>
-      </FloatingLabel>
-      </Col>
-      <Col>
-        <FloatingLabel controlId="floatingPassword" label="Branch">
-        <Form.Control type="text" placeholder="Password" value={Branch} onChange={e=>setBranch(e.target.value)}/>
-      </FloatingLabel>
-      </Col>
-        </Row>
-        <br />
-        <Row>
-        <Col>
-        <FloatingLabel controlId="floatingPassword" label="Student Phone Number">
-        <Form.Control type="number" placeholder="Password" value={Sphn} onChange={e=>setSphn(e.target.value)}/>
-      </FloatingLabel>
-      </Col>
-      <Col>
-        <FloatingLabel controlId="floatingPassword" label="Parent Phone Number">
-        <Form.Control type="text" placeholder="Password" value={Phn} onChange={e=>setPhn(e.target.value)}/>
-      </FloatingLabel>
-      </Col>
-      <Col>
-        <FloatingLabel controlId="floatingPassword" label="Guardian Phone Number (Optional)">
-        <Form.Control type="text" placeholder="Password" value={Gphn} onChange={e=>setGphn(e.target.value)}/>
-      </FloatingLabel>
-      </Col>
-        </Row>
-        <br />
-        <Row>
-        <Col>
-                <FloatingLabel controlId="floatingTextarea" label="Block" className="mb-3">
-                    <Form.Control type="number" placeholder="Leave a comment here" value={Block} onChange={e=>setBlock(e.target.value)}/>
-                </FloatingLabel>
-                </Col>
-                <Col>
-                <FloatingLabel controlId="floatingTextarea" label="Floor" className="mb-3">
-                    <Form.Control type="number" placeholder="Leave a comment here" value={Floor} onChange={e=>setFloor(e.target.value)}/>
-                </FloatingLabel>
-                </Col>
-                <Col>
-                <FloatingLabel controlId="floatingTextarea" label="Room" className="mb-3">
-                    <Form.Control type="number" placeholder="Leave a comment here" value={Room} onChange={e=>setRoom(e.target.value)}/>
-                </FloatingLabel>
-                </Col>
-        </Row>
-         <br /><center><Button onClick={Edit}>Update Student</Button> <Button type='reset' onClick={()=>{
-           setBlock('')
-           setFname('')
-           setBranch('')
-           setGphn('')
-           setMname('')
-           setName('')
-           setRegno('')
-           setRoom('')
-           setFee('')
-           setChg(false)
-         }}>Clear Data</Button></center> <br /></>:<></>} */}
          <Row md={2} xs={1} sm={1} lg={3} xl={4}>
        {Data.map(e=>
        <Col md={3}><Card style={{ width: '18rem',marginLeft:'1rem' }} key={e.id}>
-       <Card.Img variant="top" src={e.data.imageUrls} />
+       <Card.Img variant="top" src={'https://jfrtzgcmlyhlamqazwmx.supabase.co/storage/v1/object/public/images/students/'+e.regno}/>
        <Card.Body>
-         <Card.Title>{e.data.Regno}</Card.Title>
+         <Card.Title>{e.regno}</Card.Title>
          <Card.Text>
-          Name: {e.data.Name} <br />
-          Branch: {e.data.Branch} <br />
-          Block: {e.data.Block} <br />
-          Room No: {e.data.Room} <br />
-          Phone No: {e.data.Sphn}   <br />
-          Parent No: {e.data.Phn} <br />
+          Name: {e.name} <br />
+          Branch: {e.branch} <br />
+          Block: {e.Block} <br />
+          Room No: {e.Room} <br />
+          Phone No: {e.phno}   <br />
+          Parent No: {e.phno1} <br />
          </Card.Text>
          <Button variant="outline-info" onClick={()=>{
-            setId(e.id)
-            setBlock(e.data.Block)
-            setBranch(e.data.Branch)
-            setFee(e.data.Fee)
-            setFname(e.data.Fname)
-            setGphn(e.data.Gphn)
-            setMname(e.data.Mname)
-            setName(e.data.Name)
-            setPhn(e.data.Phn)
-            setRegno(e.data.Regno)
-            setRoom(e.data.Room)
-            setSphn(e.data.Sphn)
-            setYstd(e.data.Ystd)
-            setFloor(e.data.Floor)
-            setRoom(e.data.Room)
+            setId(e.regno)
+            setBlock(e.Block)
+            setBranch(e.branch)
+            setFee(e.fee)
+            setFname(e.gurdian1)
+            setGphn(e.phno2)
+            setMname(e.gurdian2)
+            setName(e.name)
+            setPhn(e.phno1)
+            setRoom(e.Room)
+            setSphn(e.phno)
+            setYstd(e.Ystd)
+            setFloor(e.floor)
+            setRoom(e.room)
+            setadhr(e.aadhar)
+            setbgp(e.blood_grp)
             setModalShow(true)
-            info();
+            // info();
             // setChg(true)
         }}
-         >Edit Data</Button>&nbsp;&nbsp;&nbsp;
+         >View Data</Button>&nbsp;&nbsp;&nbsp;
            <Button variant='outline-danger' onClick={()=>{
             setBlock(e.data.Block)
             setFloor(e.data.Floor)
